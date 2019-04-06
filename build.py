@@ -2,7 +2,6 @@
 
 import glob
 import os
-import tarfile
 import warnings
 
 import wget
@@ -17,16 +16,46 @@ def download_extract(url, dl_path):
     if dl_path.endswith(".tar.gz") and os.path.isdir(dl_path[:-len(".tar.gz")]):
         # Already extracted
         return
-    tar = tarfile.open(dl_path)
-    tar.extractall('third_party/')
-    tar.close()
+    if dl_path.endswith(".zip") and os.path.isdir(dl_path[:-len(".zip")]):
+        # Already extracted
+        return
+
+    if dl_path.endswith('.zip'):
+        from zipfile import ZipFile
+
+        z = ZipFile(dl_path)
+        z.extractall('third_party/')
+        z.close()
+    else:
+        import tarfile
+
+        tar = tarfile.open(dl_path)
+        tar.extractall('third_party/')
+        tar.close()
 
 
 # Download/Extract openfst, boost
-download_extract('https://sites.google.com/site/openfst/home/openfst-down/openfst-1.6.7.tar.gz',
-                 'third_party/openfst-1.6.7.tar.gz')
-download_extract('https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz',
-                 'third_party/boost_1_67_0.tar.gz')
+openfst_src = 'https://sites.google.com/site/openfst/home/openfst-down/openfst-1.6.7.tar.gz'
+openfst_version = '1.6.7'
+openfst_ext = '.tar.gz'
+
+boost_src = 'https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz'
+boost_version = '1_67_0'
+boost_ext = '.tar.gz'
+
+if os.name == 'nt':
+    openfst_src = 'https://github.com/kkm000/openfst/archive/winport.zip'
+    openfst_version = 'winport'
+    openfst_ext = '.zip'
+
+    boost_src = 'https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.zip'
+    boost_version = '1_67_0'
+    boost_ext = '.zip'
+
+download_extract(openfst_src,
+                 'third_party/openfst-' + openfst_version + openfst_ext)
+download_extract(boost_src,
+                 'third_party/boost_' + boost_version + boost_ext)
 
 for file in ['third_party/kenlm/setup.py', 'third_party/ThreadPool/ThreadPool.h']:
     if not os.path.exists(file):
@@ -55,10 +84,10 @@ if compile_test('lzma.h', 'lzma'):
     compile_args.append('-DHAVE_XZLIB')
     ext_libs.append('lzma')
 
-third_party_libs = ["kenlm", "openfst-1.6.7/src/include", "ThreadPool", "boost_1_67_0", "utf8"]
+third_party_libs = ["kenlm", "openfst-" + openfst_version + "/src/include", "ThreadPool", "boost_" + boost_version, "utf8"]
 compile_args.extend(['-DINCLUDE_KENLM', '-DKENLM_MAX_ORDER=6'])
 lib_sources = glob.glob('third_party/kenlm/util/*.cc') + glob.glob('third_party/kenlm/lm/*.cc') + glob.glob(
-    'third_party/kenlm/util/double-conversion/*.cc') + glob.glob('third_party/openfst-1.6.7/src/lib/*.cc')
+    'third_party/kenlm/util/double-conversion/*.cc') + glob.glob('third_party/openfst-' + openfst_version + '/src/lib/*.cc')
 lib_sources = [fn for fn in lib_sources if not (fn.endswith('main.cc') or fn.endswith('test.cc'))]
 
 third_party_includes = [os.path.realpath(os.path.join("third_party", lib)) for lib in third_party_libs]

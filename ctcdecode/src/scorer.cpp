@@ -1,6 +1,14 @@
 #include "scorer.h"
 
-#include <unistd.h>
+#ifdef _WIN32
+  #include <io.h>
+  #ifndef F_OK
+    #define F_OK 0
+  #endif
+#elif
+  #include <unistd.h>
+#endif
+
 #include <iostream>
 
 #include "lm/config.hh"
