@@ -11,5 +11,13 @@ The library is largely self-contained and requires only PyTorch 1.0. Building th
 # get the code
 git clone --recursive https://github.com/parlance/ctcdecode.git
 cd ctcdecode
-pip install .
+
+# Install PyTorch and torchvision first: https://pytorch.org/
+
+
+# Install wget
+pip install wget
+
+# Install ctcdecode
+python setup.py install
 ```
