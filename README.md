@@ -14,6 +14,12 @@ cd ctcdecode
 
 # Install PyTorch and torchvision first: https://pytorch.org/
 
+# For Windows using MSVC compiler, you must modify the following Pytorch file:
+# Lib/site-packages/torch/lib/include/csrc/api/include/torch/torch.h
+# Modify (or remove) the lines:
+# #warning "<text>"
+# to:
+# #pragma message ("<text>")
 
 # Install wget
 pip install wget
