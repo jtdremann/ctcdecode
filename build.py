@@ -72,17 +72,19 @@ def compile_test(header, library):
 
 compile_args = ['-O3', '-DKENLM_MAX_ORDER=6', '-std=c++11', '-fPIC']
 ext_libs = []
-if compile_test('zlib.h', 'z'):
-    compile_args.append('-DHAVE_ZLIB')
-    ext_libs.append('z')
+# Windows might have problems, since compile test uses g++ instead of MSVC
+if os.name != 'nt':
+    if compile_test('zlib.h', 'z'):
+        compile_args.append('-DHAVE_ZLIB')
+        ext_libs.append('z')
 
-if compile_test('bzlib.h', 'bz2'):
-    compile_args.append('-DHAVE_BZLIB')
-    ext_libs.append('bz2')
+    if compile_test('bzlib.h', 'bz2'):
+        compile_args.append('-DHAVE_BZLIB')
+        ext_libs.append('bz2')
 
-if compile_test('lzma.h', 'lzma'):
-    compile_args.append('-DHAVE_XZLIB')
-    ext_libs.append('lzma')
+    if compile_test('lzma.h', 'lzma'):
+        compile_args.append('-DHAVE_XZLIB')
+        ext_libs.append('lzma')
 
 third_party_libs = ["kenlm", "openfst-" + openfst_version + "/src/include", "ThreadPool", "boost_" + boost_version, "utf8"]
 compile_args.extend(['-DINCLUDE_KENLM', '-DKENLM_MAX_ORDER=6'])
