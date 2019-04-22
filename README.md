@@ -9,7 +9,7 @@ The library is largely self-contained and requires only PyTorch 1.0. Building th
 
 ```bash
 # get the code
-git clone --recursive https://github.com/parlance/ctcdecode.git
+git clone --recursive https://github.com/jtdremann/ctcdecode.git
 cd ctcdecode
 
 # Install PyTorch and torchvision first: https://pytorch.org/
