@@ -1,3 +1,7 @@
+# This fork
+
+This project is a fork of the main [ctcdecode](https://github.com/parlance/ctcdecode) project. This fork provides an implementation that works on Windows operating systems.
+
 # ctcdecode
 
 ctcdecode is an implementation of CTC (Connectionist Temporal Classification) beam search decoding for PyTorch.
